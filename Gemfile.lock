@@ -8,12 +8,21 @@ GEM
   specs:
     ast (2.4.2)
     bump (0.10.0)
+    byebug (11.1.3)
+    coderay (1.1.3)
     diff-lcs (1.5.0)
     json (2.6.2)
-    organize_gemfile (0.1.0)
+    magic_frozen_string_literal (1.2.0)
+    method_source (1.0.0)
     parallel (1.22.1)
     parser (3.1.2.1)
       ast (~> 2.4.1)
+    pry (0.14.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-byebug (3.10.1)
+      byebug (~> 11.0)
+      pry (>= 0.13, < 0.15)
     rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.5.0)
@@ -56,11 +65,12 @@ PLATFORMS
   arm64-darwin-21
 
 DEPENDENCIES
-  bump (~> 0.6)
-  organize_gemfile
-  rake (~> 13.0)
-  rspec (~> 3.0)
-  standard (~> 1.3)
+  bump
+  magic_frozen_string_literal
+  pry-byebug
+  rake
+  rspec
+  standard
   whoop!
 
 BUNDLED WITH
