@@ -4,6 +4,8 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/1ffd27fe59383a4ff52b/maintainability)](https://codeclimate.com/github/coderberry/whoop/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/1ffd27fe59383a4ff52b/test_coverage)](https://codeclimate.com/github/coderberry/whoop/test_coverage)
 [![Tests](https://github.com/coderberry/whoop/actions/workflows/tests.yml/badge.svg)](https://github.com/coderberry/whoop/actions/workflows/tests.yml)
+[![CodeQL](https://github.com/coderberry/whoop/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/coderberry/whoop/actions/workflows/codeql-analysis.yml)
+[![StandardRB](https://github.com/coderberry/whoop/actions/workflows/standardrb.yml/badge.svg)](https://github.com/coderberry/whoop/actions/workflows/standardrb.yml)
 [![GEM Version](https://img.shields.io/gem/v/whoop?color=168AFE&include_prereleases&logo=ruby&logoColor=FE1616)](https://rubygems.org/gems/whoop)
 [![GEM Downloads](https://img.shields.io/gem/dt/whoop?color=168AFE&logo=ruby&logoColor=FE1616)](https://rubygems.org/gems/whoop)
 [![Ruby Style](https://img.shields.io/badge/style-standard-168AFE?logo=ruby&logoColor=FE1616)](https://github.com/testdouble/standard)
