@@ -5,8 +5,11 @@
 module Whoop
   VERSION: untyped
 
-  # sord omit - no YARD return type given, using untyped
-  def self.setup: () ?{ (Whoop _self) -> void } -> untyped
+  # sord warn - Whoop::Configuration wasn't able to be resolved to a constant in this project
+  # Configure the logger
+  # 
+  # _@return_ — The configuration object
+  def self.setup: () -> Whoop::Configuration
 
   module Main
     COLORS: untyped
@@ -89,9 +92,19 @@ module Whoop
       # _@return_ — The formatted SQL query
       def self.format: (String sql, ?colorize: bool, ?explain: bool) -> String
 
-      # sord omit - no YARD type given for "sql", using untyped
-      # sord omit - no YARD return type given, using untyped
-      def self.generate_pretty_sql: (untyped sql) -> untyped
+      # Generate a pretty SQL query
+      # 
+      # _@param_ `sql` — The SQL query
+      # 
+      # _@return_ — The formatted SQL query
+      def self.generate_pretty_sql: (String sql) -> String
+
+      # Execute the `EXPLAIN` query
+      # 
+      # _@param_ `sql` — The SQL query
+      # 
+      # _@return_ — The formatted query plan
+      def self.exec_explain: (String sql) -> String
     end
 
     module JsonFormatter

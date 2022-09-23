@@ -15,7 +15,11 @@ module Whoop
 
         formatter = Rouge::Formatters::TerminalTruecolor.new
         lexer = Rouge::Lexers::JSON.new
-        formatter.format(lexer.lex(pretty_json))
+
+        [
+          "json:\n\n".colorize(:light_black).underline,
+          formatter.format(lexer.lex(pretty_json))
+        ].join
       end
     end
   end

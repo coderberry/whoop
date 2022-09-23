@@ -19,6 +19,8 @@ module Whoop
   mattr_accessor :level
   @@level = :debug
 
+  # Configure the logger
+  # @yield [Whoop::Configuration] The configuration object
   def self.setup
     yield(self)
   end
