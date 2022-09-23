@@ -5,11 +5,9 @@
 module Whoop
   VERSION: untyped
 
-  # sord warn - Whoop::Configuration wasn't able to be resolved to a constant in this project
+  # sord omit - no YARD return type given, using untyped
   # Configure the logger
-  # 
-  # _@return_ — The configuration object
-  def self.setup: () -> Whoop::Configuration
+  def self.setup: () -> untyped
 
   module Main
     COLORS: untyped

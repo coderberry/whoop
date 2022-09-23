@@ -4,6 +4,8 @@ require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
+GEM_NAME = "whoop"
+GEM_VERSION = Whoop::VERSION
 
 require "standard/rake"
 require "bump/tasks"

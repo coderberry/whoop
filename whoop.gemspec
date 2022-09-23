@@ -31,8 +31,8 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "activerecord"
-  spec.add_dependency "activesupport"
+  spec.add_dependency "activerecord", ">= 6.1.4"
+  spec.add_dependency "activesupport", ">= 6.1.4"
   spec.add_dependency "anbt-sql-formatter"
   spec.add_dependency "colorize"
   spec.add_dependency "rouge"
