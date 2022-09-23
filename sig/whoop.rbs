@@ -1,4 +1,108 @@
+# Whoop.setup do |config|
+#   config.logger = ActiveSupport::Logger.new("#{Rails.root}/log/debug.log")
+#   config.level = :debug
+# end
 module Whoop
-  VERSION: String
-  # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+  VERSION: untyped
+
+  # sord omit - no YARD return type given, using untyped
+  def self.setup: () ?{ (Whoop _self) -> void } -> untyped
+
+  module Main
+    COLORS: untyped
+    FORMATS: untyped
+    PATTERN: untyped
+    COUNT: untyped
+
+    # sord omit - no YARD return type given, using untyped
+    # Log the message to the logger
+    # 
+    # _@param_ `label` — (optional) - the label or object to log
+    # 
+    # _@param_ `pattern` — - the pattern to use for the line (e.g. '-')
+    # 
+    # _@param_ `count` — - the number of times to repeat the pattern per line (e.g. 80)
+    # 
+    # _@param_ `color` — - the color to use for the line (e.g. :red)
+    # 
+    # _@param_ `format` — - the format to use for the message (one of :json, :sql, :plain)
+    # 
+    # _@param_ `caller_depth` — - the depth of the caller to use for the source (default: 0)
+    # 
+    # _@param_ `explain` — - whether to explain the SQL query (default: false)
+    def whoop: (
+                 ?String? label,
+                 ?pattern: String,
+                 ?count: Integer,
+                 ?color: Symbol,
+                 ?format: Symbol,
+                 ?caller_depth: Integer,
+                 ?explain: bool
+               ) -> untyped
+
+    # Remove the Rails.root from the caller path
+    # 
+    # _@param_ `caller_path` — - path of the the file and line number of the caller
+    def clean_caller_path: (String caller_path) -> String
+
+    # Detect the colorize method to use
+    # 
+    # _@param_ `color`
+    # 
+    # _@return_ — the colorize method
+    def detect_color_method: (Symbol color) -> Method
+
+    # Detect the logger method to use
+    # 
+    # _@return_ — logger method
+    def detect_logger_method: () -> Method
+
+    # sord omit - no YARD type given for "colorize:", using untyped
+    # sord omit - no YARD type given for "explain:", using untyped
+    # Return the format method to use
+    # 
+    # _@param_ `format`
+    # 
+    # _@return_ — format method
+    def detect_formatter_method: (Symbol format, ?colorize: untyped, ?explain: untyped) -> Method
+
+    # Return the line with the label centered in it
+    # 
+    # _@param_ `label`
+    # 
+    # _@param_ `count`
+    # 
+    # _@param_ `pattern`
+    def wrapped_line: (String label, ?count: Integer, ?pattern: String) -> String
+  end
+
+  module Formatters
+    module SqlFormatter
+      # Format the SQL query
+      # 
+      # _@param_ `sql` — The SQL query
+      # 
+      # _@param_ `colorize` — - colorize the SQL query (default: false)
+      # 
+      # _@param_ `explain` — - also run `EXPLAIN` on the query (default: false)
+      # 
+      # _@return_ — The formatted SQL query
+      def self.format: (String sql, ?colorize: bool, ?explain: bool) -> String
+
+      # sord omit - no YARD type given for "sql", using untyped
+      # sord omit - no YARD return type given, using untyped
+      def self.generate_pretty_sql: (untyped sql) -> untyped
+    end
+
+    module JsonFormatter
+      # Format the SQL query
+      # 
+      # _@param_ `message` — The SQL query
+      # 
+      # _@param_ `colorize` — - colorize the SQL query (default: false)
+      # 
+      # _@return_ — The formatted SQL query
+      def self.format: (String message, ?colorize: bool) -> String
+    end
+  end
 end

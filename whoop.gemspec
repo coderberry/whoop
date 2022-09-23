@@ -31,8 +31,10 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
+  spec.add_dependency "activesupport"
+  spec.add_dependency "anbt-sql-formatter"
+  spec.add_dependency "colorize"
+  spec.add_dependency "rouge"
 
   spec.add_development_dependency "magic_frozen_string_literal"
   spec.add_development_dependency "pry-byebug"
@@ -40,7 +42,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "standard"
   spec.add_development_dependency "bump"
-
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
+  spec.add_development_dependency "sord"
 end

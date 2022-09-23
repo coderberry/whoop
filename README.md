@@ -53,3 +53,5 @@ Everyone interacting in the Whoop project's codebases, issue trackers, chat room
 ## Attribution
 
 This project is maintained by [Eric Berry](https://linktr.ee/coderberry).
+
+This gem is based on the [wrapped_print](https://github.com/igorkasyanchuk/wrapped_print) gem by [Igor Kasyanchuk](https://www.railsjazz.com/).
