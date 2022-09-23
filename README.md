@@ -11,7 +11,7 @@
 [![Ruby Style](https://img.shields.io/badge/style-standard-168AFE?logo=ruby&logoColor=FE1616)](https://github.com/testdouble/standard)
 [![Twitter Follow](https://img.shields.io/twitter/follow/coderberry?logo=twitter&style=social)](https://twitter.com/coderberry)
 
-Whoop is a Ruby logging library that makes it easy to find and analyze your *debugging* logs.
+Whoop is a Ruby logging library with built-in formatting and colorization.
 
 ## Installation
 
@@ -23,14 +23,38 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
     $ gem install whoop
 
-## Usage
+## Configuration
+
+You can configure the gem for you Rails app by adding an an initializer:
 
 ```ruby
-require 'whoop'
-
-w("Hello, World!")
-# => "Hello, World!"
+# config/initializers/whoop.rb
+Whoop.setup do |config|
+  config.logger = ActiveSupport::Logger.new("log/debug.log")
+  # config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
+  # config.logger = ActiveSupport::Logger.new($stdout)
+  # config.logger = nil # uses `puts`
+  
+  config.level = :debug
+  # config.level = :info
+  # config.level = :warn
+  # config.level = :error
+end
 ```
+
+## Usage
+
+The `whoop` method is accessible from any object. See specs for more examples.
+
+```ruby
+whoop "Hello, World!"
+```
+
+### Formatters
+TODO
+
+### Colors
+TODO
 
 ## Development
 
