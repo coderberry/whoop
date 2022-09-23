@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    whoop (1.0.1)
-      activerecord
-      activesupport
+    whoop (1.0.2)
+      activerecord (>= 6.1.4)
+      activesupport (>= 6.1.4)
       anbt-sql-formatter
       colorize
       rouge
