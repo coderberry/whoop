@@ -31,6 +31,7 @@ GEM
       highline (~> 2.0.0)
     concurrent-ruby (1.1.10)
     diff-lcs (1.5.0)
+    docile (1.4.0)
     highline (2.0.3)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
@@ -86,6 +87,11 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.11.0)
+    simplecov (0.16.1)
+      docile (~> 1.1)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.2)
     sorbet-runtime (0.5.10455)
     sord (4.0.0)
       commander (~> 4.5)
@@ -111,6 +117,7 @@ DEPENDENCIES
   pry-byebug
   rake
   rspec
+  simplecov
   sord
   standard
   whoop!
