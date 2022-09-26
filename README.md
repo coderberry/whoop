@@ -14,6 +14,8 @@
 
 Whoop is a Ruby logging library with built-in formatting and colorization.
 
+To try **whoop** within your browser, visit the [whoop playground](https://replit.com/@coderberry/whoop-playground).
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
