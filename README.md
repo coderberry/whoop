@@ -2,7 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/whoop.svg)](https://badge.fury.io/rb/whoop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1ffd27fe59383a4ff52b/maintainability)](https://codeclimate.com/github/coderberry/whoop/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/1ffd27fe59383a4ff52b/test_coverage)](https://codeclimate.com/github/coderberry/whoop/test_coverage)
+[![codecov](https://codecov.io/gh/coderberry/whoop/branch/main/graph/badge.svg?token=E906B6SEKD)](https://codecov.io/gh/coderberry/whoop)
 [![Tests](https://github.com/coderberry/whoop/actions/workflows/tests.yml/badge.svg)](https://github.com/coderberry/whoop/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/coderberry/whoop/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/coderberry/whoop/actions/workflows/codeql-analysis.yml)
 [![StandardRB](https://github.com/coderberry/whoop/actions/workflows/standardrb.yml/badge.svg)](https://github.com/coderberry/whoop/actions/workflows/standardrb.yml)
@@ -34,7 +34,7 @@ Whoop.setup do |config|
   # config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
   # config.logger = ActiveSupport::Logger.new($stdout)
   # config.logger = nil # uses `puts`
-  
+
   config.level = :debug
   # config.level = :info
   # config.level = :warn
@@ -81,7 +81,7 @@ whoop("My Label", color: :green) { "Hello" }
 # ------------------------------------ My Label ------------------------------------
 # timestamp: 2022-09-26 14:28:06 -0600
 # source: /spec/whoop_spec.rb:26
-# 
+#
 # Hello
 # --------------------------------------------------------------------------------
 ```
@@ -92,7 +92,7 @@ whoop({hello: "world"}, format: :json, color: false)
 # --------------------------------------------------------------------------------
 # timestamp: 2022-09-26 14:28:06 -0600
 # source: /spec/whoop_spec.rb:39
-# 
+#
 # {
 #   "hello": "world"
 # }
@@ -109,7 +109,7 @@ whoop(sql, format: :sql)
 # --------------------------------------------------------------------------------
 # timestamp: 2022-09-26 14:28:06 -0600
 # source: /spec/whoop_spec.rb:52
-# 
+#
 # SELECT
 #     emp_id
 #     ,first_name
@@ -187,7 +187,7 @@ whoop("SQL with Explain", format: :sql, explain: true) { sql }
 #   WHERE
 #     1 = rel_users_exams.exam_id
 # ;
-# 
+#
 # query plan:
 #
 # Nested Loop Left Join  (cost=11.95..28.52 rows=5 width=157) (actual time=0.010..0.010 rows=0 loops=1)
@@ -205,7 +205,7 @@ whoop("SQL with Explain", format: :sql, explain: true) { sql }
 #   ->  Materialize  (cost=0.15..8.17 rows=1 width=105) (never executed)
 #         Output: exam_1.id, exam_1.title, exam_1.date_from, exam_1.date_to, exam_1.created, exam_1.created_by_, exam_1.duration, exam_1.success_threshold, exam_1.published
 #         ->  Index Scan using exam_pkey on public.exam exam_1  (cost=0.15..8.17 rows=1 width=105) (never executed)
-#               Output: exam_1.id, exam_1.title, exam_1.date_from, exam_1.date_to, exam_1.created, exam_1.created_by_, exam_1.duration, 
+#               Output: exam_1.id, exam_1.title, exam_1.date_from, exam_1.date_to, exam_1.created, exam_1.created_by_, exam_1.duration,
 # exam_1.success_threshold, exam_1.published
 #               Index Cond: (exam_1.id = 1)
 # Planning Time: 1.110 ms
