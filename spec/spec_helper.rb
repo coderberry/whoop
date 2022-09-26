@@ -7,6 +7,7 @@ if ENV.fetch("COVERAGE", false)
     minimum_coverage 90
     maximum_coverage_drop 2
   end
+
 end
 
 require "whoop"
