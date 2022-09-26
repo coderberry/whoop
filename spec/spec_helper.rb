@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+if ENV.fetch("COVERAGE", false)
+  require "simplecov"
+  SimpleCov.start
+
+  require "codecov"
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
+
 require "whoop"
 
 RSpec.configure do |config|
