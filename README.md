@@ -1,6 +1,7 @@
 # Whoop
 
 [![Gem Version](https://badge.fury.io/rb/whoop.svg)](https://badge.fury.io/rb/whoop)
+[![Contribute](https://img.shields.io/badge/Contribute%20with-Gitpod-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/coderberry/whoop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1ffd27fe59383a4ff52b/maintainability)](https://codeclimate.com/github/coderberry/whoop/maintainability)
 [![codecov](https://codecov.io/gh/coderberry/whoop/branch/main/graph/badge.svg?token=E906B6SEKD)](https://codecov.io/gh/coderberry/whoop)
 [![Tests](https://github.com/coderberry/whoop/actions/workflows/tests.yml/badge.svg)](https://github.com/coderberry/whoop/actions/workflows/tests.yml)
