@@ -36,3 +36,8 @@ jobs:
         run: COVERAGE=true bundle exec rake spec
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/codecov-result.json
+          fail_ci_if_error: true
+          verbose: true

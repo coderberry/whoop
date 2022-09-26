@@ -45,5 +45,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bump"
   spec.add_development_dependency "sord"
   spec.add_development_dependency "simplecov"
-  spec.add_development_dependency "simplecov-cobertura"
+  spec.add_development_dependency "codecov"
 end

@@ -4,8 +4,8 @@ if ENV.fetch("COVERAGE", false)
   require "simplecov"
   SimpleCov.start
 
-  require "simplecov-cobertura"
-  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+  require "codecov"
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
 
 require "whoop"
