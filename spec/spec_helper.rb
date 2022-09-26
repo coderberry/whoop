@@ -2,12 +2,10 @@
 
 if ENV.fetch("COVERAGE", false)
   require "simplecov"
-  SimpleCov.start do
-    add_filter "/spec/"
-    minimum_coverage 90
-    maximum_coverage_drop 2
-  end
+  SimpleCov.start
 
+  require "simplecov-cobertura"
+  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
 end
 
 require "whoop"

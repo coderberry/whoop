@@ -34,16 +34,5 @@ jobs:
           bundle install --jobs 4 --retry 3
       - name: Run ruby tests
         run: COVERAGE=true bundle exec rake spec
-      - name: Restore Coverage Result
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage-results
-          path: coverage/
-      - name: Report Coverage
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: |
-          wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -qO ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-          ./cc-test-reporter sum-coverage coverage/cc-*.json -p 5 -o coverage/cc-total.json
-          ./cc-test-reporter upload-coverage -i coverage/cc-total.json
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
