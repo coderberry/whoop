@@ -31,6 +31,8 @@ module Whoop
     # _@param_ `caller_depth` — - the depth of the caller to use for the source (default: 0)
     # 
     # _@param_ `explain` — - whether to explain the SQL query (default: false)
+    # 
+    # _@param_ `persist` — - persist the whoop message to the whoop engine database
     def whoop: (
                  ?String? label,
                  ?pattern: String,
@@ -38,7 +40,8 @@ module Whoop
                  ?color: Symbol,
                  ?format: Symbol,
                  ?caller_depth: Integer,
-                 ?explain: bool
+                 ?explain: bool,
+                 ?persist: bool
                ) -> untyped
 
     # Remove the Rails.root from the caller path
@@ -75,6 +78,18 @@ module Whoop
     # 
     # _@param_ `pattern`
     def wrapped_line: (String label, ?count: Integer, ?pattern: String) -> String
+  end
+
+  class Engine < Rails::Engine
+  end
+
+  class Message < Whoop::ApplicationRecord
+  end
+
+  class ApplicationJob < ActiveJob::Base
+  end
+
+  module MessagesHelper
   end
 
   module Formatters
@@ -115,5 +130,25 @@ module Whoop
       # _@return_ — The formatted SQL query
       def self.format: (String message, ?colorize: bool) -> String
     end
+  end
+
+  class ApplicationRecord < ActiveRecord::Base
+  end
+
+  module ApplicationHelper
+  end
+
+  class ApplicationMailer < ActionMailer::Base
+  end
+
+  class MessagesController < Whoop::ApplicationController
+    # sord omit - no YARD return type given, using untyped
+    def index: () -> untyped
+
+    # sord omit - no YARD return type given, using untyped
+    def show: () -> untyped
+  end
+
+  class ApplicationController < ActionController::Base
   end
 end

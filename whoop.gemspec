@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activerecord", ">= 6.1.4"
   spec.add_dependency "activesupport", ">= 6.1.4"
+  spec.add_dependency "rails", ">= 6.1.4"
   spec.add_dependency "anbt-sql-formatter"
   spec.add_dependency "colorize"
   spec.add_dependency "rouge"

@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
+require "bundler/setup"
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
 GEM_NAME = "whoop"
 GEM_VERSION = Whoop::VERSION
+
+APP_RAKEFILE = File.expand_path("spec/dummy/Rakefile", __dir__)
+load "rails/tasks/engine.rake"
 
 require "standard/rake"
 require "bump/tasks"

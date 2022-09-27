@@ -1,23 +1,32 @@
 # frozen_string_literal: true
 
+require "rails"
 require "active_support"
 require "colorize"
 require "rouge"
 require_relative "whoop/version"
+require_relative "whoop/engine"
+require_relative "whoop/persistable"
 require_relative "whoop/formatters/json_formatter"
 require_relative "whoop/formatters/sql_formatter"
 
 # Whoop.setup do |config|
 #   config.logger = ActiveSupport::Logger.new("#{Rails.root}/log/debug.log")
 #   config.level = :debug
+#   config.persist = true
 # end
 
 module Whoop
+  include Whoop::Persistable
+
   mattr_accessor :logger
   @@logger = ActiveSupport::Logger.new($stdout)
 
   mattr_accessor :level
   @@level = :debug
+
+  mattr_accessor :persist
+  @@persist = false
 
   # Configure the logger
   # @yield [Whoop::Configuration] The configuration object
@@ -39,15 +48,39 @@ module Whoop
     # @param [Symbol] format - the format to use for the message (one of :json, :sql, :plain)
     # @param [Integer] caller_depth - the depth of the caller to use for the source (default: 0)
     # @param [Boolean] explain - whether to explain the SQL query (default: false)
-    def whoop(label = nil, pattern: PATTERN, count: COUNT, color: :default, format: :plain, caller_depth: 0, explain: false)
+    # @param [Boolean, nil] persist - persist the whoop message to the whoop engine database
+    def whoop(
+      label = nil,
+      pattern: PATTERN,
+      count: COUNT,
+      color: :default,
+      format: :plain,
+      caller_depth: 0,
+      explain: false,
+      persist: nil
+    )
       logger_method = detect_logger_method
       color_method = detect_color_method(color)
       formatter_method = detect_formatter_method(format, colorize: color.present?, explain: explain)
 
+      persist ||= Whoop.persist
+      now = Time.now.utc
+
       line = pattern * count
       caller_path = clean_caller_path(caller[caller_depth])
       caller_path_line = ["source:".colorize(:light_black).underline, caller_path].join(" ")
-      timestamp_line = ["timestamp:".colorize(:light_black).underline, Time.now].join(" ")
+      timestamp_line = ["timestamp:".colorize(:light_black).underline, now].join(" ")
+
+      if persist
+        Whoop.save_message(
+          content: block_given? ? yield : label,
+          title: block_given? ? label : nil,
+          caller: caller_path,
+          format: format,
+          explain: explain,
+          created_at: now
+        )
+      end
 
       if block_given?
         result = yield

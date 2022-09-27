@@ -6,6 +6,14 @@
 /pkg/
 /spec/reports/
 /tmp/
+/.bundle/
+/doc/
+/log/*.log
+/spec/dummy/db/*.sqlite3
+/spec/dummy/db/*.sqlite3-*
+/spec/dummy/log/*.log
+/spec/dummy/storage/
+/spec/dummy/tmp/
 
 /coverage
 *.gem
