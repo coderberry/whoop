@@ -14,6 +14,9 @@ module Whoop
     FORMATS: untyped
     PATTERN: untyped
     COUNT: untyped
+    INDENT: untyped
+    TOP_LINE_CHAR: untyped
+    BOTTOM_LINE_CHAR: untyped
 
     # sord omit - no YARD return type given, using untyped
     # Log the message to the logger
@@ -31,6 +34,8 @@ module Whoop
     # _@param_ `caller_depth` — - the depth of the caller to use for the source (default: 0)
     # 
     # _@param_ `explain` — - whether to explain the SQL query (default: false)
+    # 
+    # _@param_ `context` — - Any additional context you'd like to include in the log
     def whoop: (
                  ?String? label,
                  ?pattern: String,
@@ -38,7 +43,8 @@ module Whoop
                  ?color: Symbol,
                  ?format: Symbol,
                  ?caller_depth: Integer,
-                 ?explain: bool
+                 ?explain: bool,
+                 ?context: ::Hash[untyped, untyped]?
                ) -> untyped
 
     # Remove the Rails.root from the caller path

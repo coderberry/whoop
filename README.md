@@ -62,6 +62,7 @@ You can pass any options into the `whoop` method to change the output.
 - `format` - the format to use for the message (one of `:json`, `:sql`, `:plain`)
 - `caller_depth` - the depth of the caller to use for the source (default: 0)
 - `explain` - whether to run `EXPLAIN` on the SQL query (default: false)
+- `context` - a hash of key/value pairs to include in the output
 
 ## Examples
 
@@ -69,37 +70,54 @@ You can pass any options into the `whoop` method to change the output.
 whoop "Hello"
 
 # log/debug.log
-# --------------------------------------------------------------------------------
-# timestamp: 2022-09-26 14:28:06 -0600
-# source: /spec/whoop_spec.rb:12
+# ┏--------------------------------------------------------------------------------
+# ┆ timestamp: 2022-09-26 14:28:06 -0600
+# ┆ source: /spec/whoop_spec.rb:12
 #
 # Hello
-# --------------------------------------------------------------------------------
+# 
+# ┗--------------------------------------------------------------------------------
 ```
 
 ```ruby
 whoop("My Label", color: :green) { "Hello" }
 
 # log/debug.log (the colors don't appear in markdown)
-# ------------------------------------ My Label ------------------------------------
-# timestamp: 2022-09-26 14:28:06 -0600
-# source: /spec/whoop_spec.rb:26
+# ┏------------------------------------ My Label ------------------------------------
+# ┆ timestamp: 2022-09-26 14:28:06 -0600
+# ┆ source: /spec/whoop_spec.rb:26
 #
 # Hello
-# --------------------------------------------------------------------------------
+# 
+# ┗--------------------------------------------------------------------------------
 ```
 
 ```ruby
 whoop({hello: "world"}, format: :json, color: false)
 
-# --------------------------------------------------------------------------------
-# timestamp: 2022-09-26 14:28:06 -0600
-# source: /spec/whoop_spec.rb:39
+# ┏--------------------------------------------------------------------------------
+# ┆ timestamp: 2022-09-26 14:28:06 -0600
+# ┆ source: /spec/whoop_spec.rb:39
 #
 # {
 #   "hello": "world"
 # }
-# --------------------------------------------------------------------------------
+# 
+# ┗--------------------------------------------------------------------------------
+```
+
+```ruby
+whoop("This message includes context", color: false, context: {user: "Eric", ip_address: "127.0.0.1"})
+
+# ┏--------------------------------------------------------------------------------
+# ┆ timestamp: 2022-09-26 14:28:06 -0600
+# ┆ source: /spec/whoop_spec.rb:39
+# ┆ user: Eric
+# ┆ ip_address: 127.0.0.1
+#
+# This message includes context
+# 
+# ┗--------------------------------------------------------------------------------
 ```
 
 ```ruby
@@ -109,9 +127,9 @@ sql = 'SELECT emp_id, first_name,last_name,dept_id,mgr_id, ' +
 
 whoop(sql, format: :sql)
 
-# --------------------------------------------------------------------------------
-# timestamp: 2022-09-26 14:28:06 -0600
-# source: /spec/whoop_spec.rb:52
+# ┏--------------------------------------------------------------------------------
+# ┆ timestamp: 2022-09-26 14:28:06 -0600
+# ┆ source: /spec/whoop_spec.rb:52
 #
 # SELECT
 #     emp_id
@@ -131,7 +149,8 @@ whoop(sql, format: :sql)
 #     mgr_id < 300
 #   ORDER BY
 #     "Exists in Dept"
-#--------------------------------------------------------------------------------
+# 
+# ┗--------------------------------------------------------------------------------
 ```
 
 #### Auto-explain SQL queries
@@ -164,9 +183,9 @@ SQL
 
 whoop("SQL with Explain", format: :sql, explain: true) { sql }
 
-# -------------------------------- SQL with Explain --------------------------------
-# timestamp: 2022-09-26 14:50:11 -0600
-# source: (irb):23:in `<top (required)>'
+# ┏-------------------------------- SQL with Explain --------------------------------
+# ┆ timestamp: 2022-09-26 14:50:11 -0600
+# ┆ source: (irb):23:in `<top (required)>'
 #
 # sql:
 #
@@ -213,7 +232,8 @@ whoop("SQL with Explain", format: :sql, explain: true) { sql }
 #               Index Cond: (exam_1.id = 1)
 # Planning Time: 1.110 ms
 # Execution Time: 0.170 ms
-# --------------------------------------------------------------------------------
+# 
+# ┗--------------------------------------------------------------------------------
 ```
 
 
