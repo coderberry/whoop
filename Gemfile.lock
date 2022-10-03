@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    whoop (1.0.2)
+    whoop (1.0.3)
       activerecord (>= 6.1.4)
       activesupport (>= 6.1.4)
       anbt-sql-formatter
