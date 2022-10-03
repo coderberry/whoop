@@ -30,6 +30,9 @@ module Whoop
     FORMATS = %i[plain json sql].freeze
     PATTERN = "-"
     COUNT = 80
+    INDENT = "┆"
+    TOP_LINE_CHAR = "┏"
+    BOTTOM_LINE_CHAR = "┗"
 
     # Log the message to the logger
     # @param [String] label (optional) - the label or object to log
@@ -39,15 +42,34 @@ module Whoop
     # @param [Symbol] format - the format to use for the message (one of :json, :sql, :plain)
     # @param [Integer] caller_depth - the depth of the caller to use for the source (default: 0)
     # @param [Boolean] explain - whether to explain the SQL query (default: false)
-    def whoop(label = nil, pattern: PATTERN, count: COUNT, color: :default, format: :plain, caller_depth: 0, explain: false)
+    # @param [Hash] context - Any additional context you'd like to include in the log
+    def whoop(
+      label = nil,
+      pattern: PATTERN,
+      count: COUNT,
+      color: :default,
+      format: :plain,
+      caller_depth: 0,
+      explain: false,
+      context: nil
+    )
       logger_method = detect_logger_method
       color_method = detect_color_method(color)
       formatter_method = detect_formatter_method(format, colorize: color.present?, explain: explain)
 
       line = pattern * count
       caller_path = clean_caller_path(caller[caller_depth])
-      caller_path_line = ["source:".colorize(:light_black).underline, caller_path].join(" ")
-      timestamp_line = ["timestamp:".colorize(:light_black).underline, Time.now].join(" ")
+      caller_path_line = [color_method.call(INDENT), "source:".colorize(:light_black).underline, caller_path].join(" ")
+      timestamp_line = [color_method.call(INDENT), "timestamp:".colorize(:light_black).underline, Time.now].join(" ")
+
+      context_lines =
+        if context.is_a?(Hash) && context.keys.length > 0
+          context.map do |k, v|
+            [color_method.call(INDENT), "#{k}:".colorize(:light_black).underline, v].join(" ")
+          end
+        else
+          []
+        end
 
       if block_given?
         result = yield
@@ -58,21 +80,25 @@ module Whoop
             pattern * count
           end
         result.tap do
-          logger_method.call color_method.call "\n\n#{top_line}"
+          logger_method.call color_method.call "\n\n#{TOP_LINE_CHAR}#{top_line}"
           logger_method.call timestamp_line
           logger_method.call caller_path_line
+          context_lines.each { |l| logger_method.call l }
           logger_method.call ""
           logger_method.call formatter_method.call(result)
-          logger_method.call color_method.call "#{line}\n\n"
+          logger_method.call ""
+          logger_method.call color_method.call "#{BOTTOM_LINE_CHAR}#{line}\n\n"
         end
       else
         tap do
-          logger_method.call color_method.call "\n\n#{line}"
+          logger_method.call color_method.call "\n\n#{TOP_LINE_CHAR}#{line}"
           logger_method.call timestamp_line
           logger_method.call caller_path_line
+          context_lines.each { |l| logger_method.call l }
           logger_method.call ""
           logger_method.call formatter_method.call(label)
-          logger_method.call color_method.call "#{line}\n\n"
+          logger_method.call ""
+          logger_method.call color_method.call "#{BOTTOM_LINE_CHAR}#{line}\n\n"
         end
       end
     end

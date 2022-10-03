@@ -14,8 +14,8 @@ RSpec.describe Whoop do
 
         puts logged_message
 
-        expect(logged_message.uncolorize).to match %r{^timestamp:.*}
-        expect(logged_message.uncolorize).to match %r{^source:.*}
+        expect(logged_message.uncolorize).to match %r{^┆ timestamp:.*}
+        expect(logged_message.uncolorize).to match %r{^┆ source:.*}
         expect(logged_message.uncolorize).to include("Hello")
       end
     end
@@ -49,12 +49,43 @@ RSpec.describe Whoop do
       it "writes to the logger" do
         io = setup_whoop
         sql = 'SELECT emp_id, first_name,last_name,dept_id,mgr_id, WIDTH_BUCKET(department_id,20,40,10) "Exists in Dept" FROM emp WHERE mgr_id < 300 ORDER BY "Exists in Dept"'
-        whoop(sql, format: :sql)
+        whoop(sql, format: :sql, color: :blue)
         logged_message = io.string
 
         puts logged_message
 
         expect(logged_message).to include("SELECT")
+      end
+    end
+
+    context "when context is passed" do
+      it "writes to the logger" do
+        io = setup_whoop
+        context = {
+          current_user: "Eric",
+          ip_address: "127.0.0.1"
+        }
+        whoop("With Context", context: context) { "Should include context" }
+        logged_message = io.string
+
+        puts logged_message
+
+        context.each do |k, v|
+          expect(logged_message.uncolorize).to include "#{k}: #{v}"
+        end
+      end
+    end
+
+    context "when invalid context is passed" do
+      it "writes to the logger" do
+        io = setup_whoop
+        context = "This is not a hash"
+        whoop("With Invalid Context", context: context) { "Should not include context" }
+        logged_message = io.string
+
+        puts logged_message
+
+        expect(logged_message).not_to include(context)
       end
     end
   end
