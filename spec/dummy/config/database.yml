@@ -1,0 +1,14 @@
+default: &default
+  adapter: postgresql
+  host: <%= ENV.fetch('POSTGRES_HOST') %>
+  username: <%= ENV.fetch('POSTGRES_USER') %>
+  password: <%= ENV.fetch('POSTGRES_PASSWORD') %>
+  port: <%= ENV.fetch('POSTGRES_PORT') %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch('POSTGRES_DB') %>_development
+
+test:
+  <<: *default
+  database: <%= ENV.fetch('POSTGRES_DB') %>_test

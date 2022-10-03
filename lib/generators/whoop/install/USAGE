@@ -1,0 +1,8 @@
+Description:
+    Create a Whoop initializer
+
+Example:
+    rails generate whoop:install
+
+    This will create:
+        config/initializers/whoop.rb

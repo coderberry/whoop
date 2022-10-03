@@ -1,0 +1,7 @@
+Found <%= @messages.count %> messages
+
+<ul>
+  <% @messages.each do |message| %>
+    <li><%= message.inspect %></li>
+  <% end %>
+</ul>

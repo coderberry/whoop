@@ -37,7 +37,9 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "magic_frozen_string_literal"
   spec.add_development_dependency "pry-byebug"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "rspec-rails"
+  spec.add_development_dependency "factory_bot_rails"
+  spec.add_development_dependency "dotenv-rails"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "standard"
   spec.add_development_dependency "bump"
