@@ -83,6 +83,18 @@ module Whoop
     def wrapped_line: (String label, ?count: Integer, ?pattern: String) -> String
   end
 
+  class Engine < Rails::Engine
+  end
+
+  class Message < Whoop::ApplicationRecord
+  end
+
+  class ApplicationJob < ActiveJob::Base
+  end
+
+  module ViewerHelper
+  end
+
   module Formatters
     module SqlFormatter
       # Format the SQL query
@@ -120,6 +132,36 @@ module Whoop
       # 
       # _@return_ — The formatted SQL query
       def self.format: (String message, ?colorize: bool) -> String
+    end
+  end
+
+  class ApplicationRecord < ActiveRecord::Base
+  end
+
+  module ApplicationHelper
+  end
+
+  class ApplicationMailer < ActionMailer::Base
+  end
+
+  class ViewerController < Whoop::ApplicationController
+    # sord omit - no YARD return type given, using untyped
+    def index: () -> untyped
+
+    # sord omit - no YARD return type given, using untyped
+    def show: () -> untyped
+  end
+
+  class ApplicationController < ActionController::Base
+  end
+
+  module Generators
+    class InstallGenerator < Rails::Generators::Base
+      # sord omit - no YARD return type given, using untyped
+      def set_source_paths: () -> untyped
+
+      # sord omit - no YARD return type given, using untyped
+      def copy_initializer_file: () -> untyped
     end
   end
 end

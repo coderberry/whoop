@@ -3,13 +3,15 @@
 require "active_support"
 require "colorize"
 require "rouge"
-require_relative "whoop/version"
-require_relative "whoop/formatters/json_formatter"
-require_relative "whoop/formatters/sql_formatter"
+require "whoop/version"
+require "whoop/engine"
+require "whoop/formatters/json_formatter"
+require "whoop/formatters/sql_formatter"
 
 # Whoop.setup do |config|
 #   config.logger = ActiveSupport::Logger.new("#{Rails.root}/log/debug.log")
 #   config.level = :debug
+#   config.persist = true
 # end
 
 module Whoop
@@ -18,6 +20,9 @@ module Whoop
 
   mattr_accessor :level
   @@level = :debug
+
+  mattr_accessor :persist
+  @@persist = false
 
   # Configure the logger
   # @yield [Whoop::Configuration] The configuration object
@@ -71,11 +76,12 @@ module Whoop
           []
         end
 
+      content = block_given? ? yield : label
+
       if block_given?
-        result = yield
         top_line =
           if label.present? && label.is_a?(String)
-            wrapped_line(label.to_s, pattern: pattern, count: count)
+            wrapped_line(content.to_s, pattern: pattern, count: count)
           else
             pattern * count
           end
@@ -96,10 +102,25 @@ module Whoop
           logger_method.call caller_path_line
           context_lines.each { |l| logger_method.call l }
           logger_method.call ""
-          logger_method.call formatter_method.call(label)
+          logger_method.call formatter_method.call(content)
           logger_method.call ""
           logger_method.call color_method.call "#{BOTTOM_LINE_CHAR}#{line}\n\n"
         end
+      end
+
+      # Create Whoop::Message if persist == true
+      if Whoop.persist
+        Whoop::Message.create(
+          label: block_given? ? nil : label,
+          content: content,
+          query_plan: format == :sql ? Whoop::Formatters::SqlFormatter.exec_explain(content) : nil,
+          pattern: pattern,
+          count: count,
+          color: color,
+          format: format,
+          caller_path: caller_path,
+          context: context
+        )
       end
     end
 
