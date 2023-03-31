@@ -12,6 +12,9 @@ require_relative "whoop/formatters/sql_formatter"
 #   config.level = :debug
 # end
 
+class FormatNotSupportedError < StandardError
+end
+
 module Whoop
   mattr_accessor :logger
   @@logger = ActiveSupport::Logger.new($stdout)
@@ -53,6 +56,8 @@ module Whoop
       explain: false,
       context: nil
     )
+      raise FormatNotSupportedError unless %i[plain json sql].include?(format)
+
       logger_method = detect_logger_method
       color_method = detect_color_method(color)
       formatter_method = detect_formatter_method(format, colorize: color.present?, explain: explain)

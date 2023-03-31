@@ -33,6 +33,16 @@ RSpec.describe Whoop do
       end
     end
 
+    context "when the format is invalid" do
+      it "throws a FormatNotSupportedError exception" do
+        io = setup_whoop
+
+        expect do
+          whoop("Bad format", format: :invalid)
+        end.to raise_error(FormatNotSupportedError)
+      end
+    end
+
     context "when the format is :json" do
       it "writes to the logger" do
         io = setup_whoop
