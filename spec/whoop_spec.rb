@@ -99,20 +99,15 @@ RSpec.describe Whoop do
       end
     end
 
-    context 'when parsing PostgreSQL jsonb column operators' do
-      it 'appropriately formats the SQL' do
+    context 'parsing PostgreSQL operators' do
+      it 'appropriately formats jsonb column operators' do
         io = setup_whoop
-        column_operator_examples = [
-          "'[{\"a\":\"foo\"},{\"b\":\"bar\"},{\"c\":\"baz\"}]'::json -> 2",
-        ]
 
-        column_operator_examples.each do |sql|
-          whoop(sql, format: :sql)
+        ['->>', '->' , '#>>', '#>'].each do |token|
+          whoop(token, format: :sql)
           logged_message = io.string
 
-          puts logged_message
-
-          expect(logged_message).to include(sql)
+          expect(logged_message.uncolorize).to include(token)
         end
       end
     end
