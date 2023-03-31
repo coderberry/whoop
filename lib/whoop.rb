@@ -56,7 +56,7 @@ module Whoop
       explain: false,
       context: nil
     )
-      raise FormatNotSupportedError unless %i[plain json sql].include?(format)
+      raise FormatNotSupportedError unless FORMATS.include?(format)
 
       logger_method = detect_logger_method
       color_method = detect_color_method(color)
