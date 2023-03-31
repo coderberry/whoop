@@ -88,6 +88,24 @@ RSpec.describe Whoop do
         expect(logged_message).not_to include(context)
       end
     end
+
+    context 'when parsing PostgreSQL jsonb column operators' do
+      it 'appropriately formats the SQL' do
+        io = setup_whoop
+        column_operator_examples = [
+          "'[{\"a\":\"foo\"},{\"b\":\"bar\"},{\"c\":\"baz\"}]'::json -> 2",
+        ]
+
+        column_operator_examples.each do |sql|
+          whoop(sql, format: :sql)
+          logged_message = io.string
+
+          puts logged_message
+
+          expect(logged_message).to include(sql)
+        end
+      end
+    end
   end
 
   private
