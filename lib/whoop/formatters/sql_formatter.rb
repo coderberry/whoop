@@ -6,7 +6,13 @@ require "active_record"
 module Whoop
   module Formatters
     module SqlFormatter
-      TOKENS_TO_PRESERVE = ['::', '->>', '->' , '#>>', '#>']
+      PATTERNS_TO_PRESERVE = {
+        '::': ' : : ',
+        '->>': '- > >',
+        '->': '- >',
+        '#>>': '# > >',
+        '#>': '# >'
+      }
 
       # Format the SQL query
       # @param [String] sql The SQL query
@@ -48,11 +54,10 @@ module Whoop
         # Anbt injects additional spaces into joined symbols.
         # This removes them by generating the "broken" collection
         # of symbols, and replacing them with the original.
-        TOKENS_TO_PRESERVE.each do |token|
-          token_with_whitespace = inject_whitespace_into(token)
-          next unless formatted_string.include?(token_with_whitespace)
+        PATTERNS_TO_PRESERVE.each do |token, pattern|
+          next unless formatted_string.include?(pattern)
 
-          formatted_string.gsub!(token_with_whitespace, token)
+          formatted_string.gsub!(pattern, token.to_s)
         end
 
         formatted_string
@@ -72,19 +77,6 @@ module Whoop
         pretty_explain << "\n(#{nrows} #{rows_label})"
 
         pretty_explain.join("\n")
-      end
-
-      # Adds whitespace to tokens so they match the incorrect format
-      # @params [String] token The token to inject whitespace into, ie "->>"
-      # @return [String] The token with additional whitespace, ie "- > >"
-      def self.inject_whitespace_into(token)
-        # Inject whitespace to match the (broken) format
-        token_with_whitespace = token.chars.join(" ")
-
-        # :: is a special case where it needs to strip surrounding whitespace too
-        return token_with_whitespace unless token == '::'
-
-        " #{token_with_whitespace} "
       end
     end
   end
