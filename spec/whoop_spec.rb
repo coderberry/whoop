@@ -34,12 +34,15 @@ RSpec.describe Whoop do
     end
 
     context "when the format is invalid" do
-      it "throws a FormatNotSupportedError exception" do
+      it "adds a note listing available formats" do
         io = setup_whoop
+        whoop("Bad format", format: :invalid, color: false)
+        logged_message = io.string
 
-        expect do
-          whoop("Bad format", format: :invalid)
-        end.to raise_error(FormatNotSupportedError)
+        puts logged_message
+
+        expect(logged_message).to include('Bad format')
+        expect(logged_message).to include('Unsupported format used. Available formats: plain, json, and sql')
       end
     end
 
@@ -52,6 +55,7 @@ RSpec.describe Whoop do
         puts logged_message
 
         expect(logged_message).to include('"hello": "world"')
+        expect(logged_message).not_to include('Unsupported format used.')
       end
     end
 
@@ -65,6 +69,7 @@ RSpec.describe Whoop do
         puts logged_message
 
         expect(logged_message).to include("SELECT")
+        expect(logged_message).not_to include('Unsupported format used.')
       end
     end
 
