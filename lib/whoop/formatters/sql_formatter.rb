@@ -6,6 +6,9 @@ require "active_record"
 module Whoop
   module Formatters
     module SqlFormatter
+      # Hash of patterns to preserve in the SQL. The key is the expected pattern,
+      # the value is the pattern after it has been "broken" by anbt formatting.
+      # Instances of the value are replaced by the key.
       PATTERNS_TO_PRESERVE = {
         '::': ' : : ',
         '->>': '- > >',
