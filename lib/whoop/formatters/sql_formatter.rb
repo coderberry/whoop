@@ -9,12 +9,13 @@ module Whoop
       # Hash of patterns to preserve in the SQL. The key is the expected pattern,
       # the value is the pattern after it has been "broken" by anbt formatting.
       # Instances of the value are replaced by the key.
+      # Patterns are jsonb column operators from https://www.postgresql.org/docs/15/functions-json.html
       PATTERNS_TO_PRESERVE = {
-        '::': ' : : ',
-        '->>': '- > >',
-        '->': '- >',
-        '#>>': '# > >',
-        '#>': '# >'
+        '::' => ' : : ',
+        '->>' => '- > >',
+        '->' => '- >',
+        '#>>' => '# > >',
+        '#>' => '# >'
       }
 
       # Format the SQL query
@@ -57,10 +58,10 @@ module Whoop
         # Anbt injects additional spaces into joined symbols.
         # This removes them by generating the "broken" collection
         # of symbols, and replacing them with the original.
-        PATTERNS_TO_PRESERVE.each do |token, pattern|
-          next unless formatted_string.include?(pattern)
+        PATTERNS_TO_PRESERVE.each do |correct_pattern, incorrect_pattern|
+          next unless formatted_string.include?(incorrect_pattern)
 
-          formatted_string.gsub!(pattern, token.to_s)
+          formatted_string.gsub!(incorrect_pattern, correct_pattern)
         end
 
         formatted_string
