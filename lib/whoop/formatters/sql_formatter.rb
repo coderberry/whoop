@@ -11,11 +11,26 @@ module Whoop
       # Instances of the value are replaced by the key.
       # Patterns are jsonb column operators from https://www.postgresql.org/docs/15/functions-json.html
       PATTERNS_TO_PRESERVE = {
-        '::' => ' : : ',
-        '->>' => '- > >',
-        '->' => '- >',
-        '#>>' => '# > >',
-        '#>' => '# >'
+        # jsonb operators without surrounding spaces
+        # IE, the first one replaces " : : " with "::"
+        '::' => /\s?: :\s?/,
+        '->>' => /\s?- > >\s?/,
+        '->' => /\s?- >\s?/,
+        '#>>' => /\s?# > >\s?/,
+        '#>' => /\s?# >\s?/,
+
+        # jsonb operators with surrounding spaces
+        # IE, the first one replaces " @ > " with " @> "
+        ' @> ' => /\s?@ >\s?/,
+        ' <@ ' => /\s?< @\s?/,
+        ' ?| ' => /\s?\? \|\s?/,
+        ' ?& ' => /\s?\? &\s?/,
+        ' || ' => /\s?\| \|\s?/,
+        ' #- ' => /\s?# -\s?/,
+
+        # Additional broken patterns
+        '[' => /\[\s?/,
+        ']' => /\s?\]/,
       }
 
       # Format the SQL query
@@ -59,7 +74,7 @@ module Whoop
         # This removes them by generating the "broken" collection
         # of symbols, and replacing them with the original.
         PATTERNS_TO_PRESERVE.each do |correct_pattern, incorrect_pattern|
-          next unless formatted_string.include?(incorrect_pattern)
+          next unless incorrect_pattern.match?(formatted_string)
 
           formatted_string.gsub!(incorrect_pattern, correct_pattern)
         end
