@@ -13,24 +13,24 @@ module Whoop
       PATTERNS_TO_PRESERVE = {
         # jsonb operators without surrounding spaces
         # IE, the first one replaces " : : " with "::"
-        '::' => /\s?: :\s?/,
-        '->>' => /\s?- > >\s?/,
-        '->' => /\s?- >\s?/,
-        '#>>' => /\s?# > >\s?/,
-        '#>' => /\s?# >\s?/,
+        "::" => /\s?: :\s?/,
+        "->>" => /\s?- > >\s?/,
+        "->" => /\s?- >\s?/,
+        "#>>" => /\s?# > >\s?/,
+        "#>" => /\s?# >\s?/,
 
         # jsonb operators with surrounding spaces
         # IE, the first one replaces " @ > " with " @> "
-        ' @> ' => /\s?@ >\s?/,
-        ' <@ ' => /\s?< @\s?/,
-        ' ?| ' => /\s?\? \|\s?/,
-        ' ?& ' => /\s?\? &\s?/,
-        ' || ' => /\s?\| \|\s?/,
-        ' #- ' => /\s?# -\s?/,
+        " @> " => /\s?@ >\s?/,
+        " <@ " => /\s?< @\s?/,
+        " ?| " => /\s?\? \|\s?/,
+        " ?& " => /\s?\? &\s?/,
+        " || " => /\s?\| \|\s?/,
+        " #- " => /\s?# -\s?/,
 
         # Additional broken patterns
-        '[' => /\[\s?/,
-        ']' => /\s?\]/,
+        "[" => /\[\s?/,
+        "]" => /\s?\]/
       }
 
       # Format the SQL query

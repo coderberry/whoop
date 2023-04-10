@@ -73,6 +73,12 @@ module Whoop
     # _@return_ — format method
     def detect_formatter_method: (Symbol format, ?colorize: untyped, ?explain: untyped) -> Method
 
+    # sord omit - no YARD type given for "format", using untyped
+    # sord omit - no YARD type given for "color_method", using untyped
+    # sord omit - no YARD type given for "logger_method", using untyped
+    # sord omit - no YARD return type given, using untyped
+    def display_invalid_format_message: (untyped format, untyped color_method, untyped logger_method) -> untyped
+
     # Return the line with the label centered in it
     # 
     # _@param_ `label`
@@ -85,6 +91,8 @@ module Whoop
 
   module Formatters
     module SqlFormatter
+      PATTERNS_TO_PRESERVE: untyped
+
       # Format the SQL query
       # 
       # _@param_ `sql` — The SQL query
