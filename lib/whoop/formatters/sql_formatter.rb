@@ -6,6 +6,33 @@ require "active_record"
 module Whoop
   module Formatters
     module SqlFormatter
+      # Hash of patterns to preserve in the SQL. The key is the expected pattern,
+      # the value is the pattern after it has been "broken" by anbt formatting.
+      # Instances of the value are replaced by the key.
+      # Patterns are jsonb column operators from https://www.postgresql.org/docs/15/functions-json.html
+      PATTERNS_TO_PRESERVE = {
+        # jsonb operators without surrounding spaces
+        # IE, the first one replaces " : : " with "::"
+        '::' => /\s?: :\s?/,
+        '->>' => /\s?- > >\s?/,
+        '->' => /\s?- >\s?/,
+        '#>>' => /\s?# > >\s?/,
+        '#>' => /\s?# >\s?/,
+
+        # jsonb operators with surrounding spaces
+        # IE, the first one replaces " @ > " with " @> "
+        ' @> ' => /\s?@ >\s?/,
+        ' <@ ' => /\s?< @\s?/,
+        ' ?| ' => /\s?\? \|\s?/,
+        ' ?& ' => /\s?\? &\s?/,
+        ' || ' => /\s?\| \|\s?/,
+        ' #- ' => /\s?# -\s?/,
+
+        # Additional broken patterns
+        '[' => /\[\s?/,
+        ']' => /\s?\]/,
+      }
+
       # Format the SQL query
       # @param [String] sql The SQL query
       # @param [Boolean] colorize - colorize the SQL query (default: false)
@@ -39,8 +66,20 @@ module Whoop
       def self.generate_pretty_sql(sql)
         rule = AnbtSql::Rule.new
         rule.indent_string = "  "
+
         formatter = AnbtSql::Formatter.new(rule)
-        formatter.format(sql.dup)
+        formatted_string = formatter.format(sql.dup)
+
+        # Anbt injects additional spaces into joined symbols.
+        # This removes them by generating the "broken" collection
+        # of symbols, and replacing them with the original.
+        PATTERNS_TO_PRESERVE.each do |correct_pattern, incorrect_pattern|
+          next unless incorrect_pattern.match?(formatted_string)
+
+          formatted_string.gsub!(incorrect_pattern, correct_pattern)
+        end
+
+        formatted_string
       end
 
       # Execute the `EXPLAIN` query

@@ -87,6 +87,7 @@ module Whoop
           logger_method.call ""
           logger_method.call formatter_method.call(result)
           logger_method.call ""
+          display_invalid_format_message(format, color_method, logger_method)
           logger_method.call color_method.call "#{BOTTOM_LINE_CHAR}#{line}\n\n"
         end
       else
@@ -98,6 +99,7 @@ module Whoop
           logger_method.call ""
           logger_method.call formatter_method.call(label)
           logger_method.call ""
+          display_invalid_format_message(format, color_method, logger_method)
           logger_method.call color_method.call "#{BOTTOM_LINE_CHAR}#{line}\n\n"
         end
       end
@@ -148,6 +150,13 @@ module Whoop
       else
         ->(message) { message }
       end
+    end
+
+    def display_invalid_format_message(format, color_method, logger_method)
+      return if FORMATS.include?(format)
+
+      invalid_format_line = [color_method.call(INDENT), "note:".colorize(:blue).underline, "Unsupported format used. Available formats: #{FORMATS.to_sentence}"].join(" ")
+      logger_method.call invalid_format_line
     end
 
     # Return the line with the label centered in it

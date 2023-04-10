@@ -33,6 +33,19 @@ RSpec.describe Whoop do
       end
     end
 
+    context "when the format is invalid" do
+      it "adds a note listing available formats" do
+        io = setup_whoop
+        whoop("Bad format", format: :invalid, color: false)
+        logged_message = io.string
+
+        puts logged_message
+
+        expect(logged_message).to include('Bad format')
+        expect(logged_message).to include('Unsupported format used. Available formats: plain, json, and sql')
+      end
+    end
+
     context "when the format is :json" do
       it "writes to the logger" do
         io = setup_whoop
@@ -42,6 +55,7 @@ RSpec.describe Whoop do
         puts logged_message
 
         expect(logged_message).to include('"hello": "world"')
+        expect(logged_message).not_to include('Unsupported format used.')
       end
     end
 
@@ -55,6 +69,7 @@ RSpec.describe Whoop do
         puts logged_message
 
         expect(logged_message).to include("SELECT")
+        expect(logged_message).not_to include('Unsupported format used.')
       end
     end
 
@@ -86,6 +101,35 @@ RSpec.describe Whoop do
         puts logged_message
 
         expect(logged_message).not_to include(context)
+      end
+    end
+
+    context 'parsing PostgreSQL operators' do
+      it 'appropriately formats jsonb column operators' do
+        io = setup_whoop
+
+        # Examples from https://www.postgresql.org/docs/9.5/functions-json.html
+        [
+          %Q['{"a": {"b":"foo"}}'::json->'a'],
+          %Q['[1,2,3]'::json->>2],
+          %Q['{"a":1,"b":2}'::json->>'b'],
+          %Q['{"a": {"b":{"c": "foo"}}}'::json#>'{a,b}'],
+          %Q['{"a":[1,2,3],"b":[4,5,6]}'::json#>>'{a,2}'],
+          %Q['{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb],
+          %Q['{"b":2}'::jsonb <@ '{"a":1, "b":2}'::jsonb],
+          %Q['{"a":1, "b":2}'::jsonb ? 'b'],
+          %Q['{"a":1, "b":2, "c":3}'::jsonb ?| array['b']],
+          %Q['["a", "b"]'::jsonb ?& array['a']],
+          %Q['["a", "b"]'::jsonb || '["c"]'::jsonb],
+          %Q['{"a": "b"}'::jsonb - 'a'],
+          %Q['["a", "b"]'::jsonb - 1],
+          %Q['["a", {"b":1}]'::jsonb #- '{1,b}']
+        ].each do |token|
+          whoop(token, format: :sql, color: false)
+          logged_message = io.string
+
+          expect(logged_message.uncolorize).to include(token)
+        end
       end
     end
   end
