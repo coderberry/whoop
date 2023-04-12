@@ -4,8 +4,15 @@ module Whoop
 
     class_option :level, type: :string, default: 'debug'
 
+    VALID_LEVELS = %w[debug info warn error]
+
     def install
       @level = options['level']
+
+      unless VALID_LEVELS.include?(@level)
+        log("Level must be one of #{VALID_LEVELS.join(", ")}\nAborting...\n")
+        exit 1
+      end
 
       file_contents = <<~TEXT
       Whoop.setup do |config|
