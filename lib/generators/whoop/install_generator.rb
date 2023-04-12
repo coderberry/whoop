@@ -4,12 +4,12 @@ module Whoop
 
     VALID_LEVELS = %w[debug info warn error]
 
-    class_option :logger, type: :string, default: 'log/debug.log', desc: 'Indicates a file to output whoop logs to'
-    class_option :level, type: :string, default: 'debug', desc: "Indicates the log level whoop should use. One of #{VALID_LEVELS.join(', ')}"
+    class_option :logger, type: :string, default: "log/debug.log", desc: "Indicates a file to output whoop logs to"
+    class_option :level, type: :string, default: "debug", desc: "Indicates the log level whoop should use. One of #{VALID_LEVELS.join(", ")}"
 
     def install
-      @logger = options['logger']
-      @level = options['level']
+      @logger = options["logger"]
+      @level = options["level"]
 
       unless VALID_LEVELS.include?(@level)
         log("Level must be one of #{VALID_LEVELS.join(", ")}\nAborting...\n")
@@ -17,17 +17,17 @@ module Whoop
       end
 
       file_contents = <<~TEXT
-      Whoop.setup do |config|
-        config.logger = ActiveSupport::Logger.new("#{@logger}")
-        # config.logger = ActiveSupport::Logger.new("log/\#{Rails.env}.log")
-        # config.logger = ActiveSupport::Logger.new($stdout)
-        # config.logger = nil # uses `puts`
+        Whoop.setup do |config|
+          config.logger = ActiveSupport::Logger.new("#{@logger}")
+          # config.logger = ActiveSupport::Logger.new("log/\#{Rails.env}.log")
+          # config.logger = ActiveSupport::Logger.new($stdout)
+          # config.logger = nil # uses `puts`
 
-        config.level = :#{@level}
-        # config.level = :info
-        # config.level = :warn
-        # config.level = :error
-      end
+          config.level = :#{@level}
+          # config.level = :info
+          # config.level = :warn
+          # config.level = :error
+        end
       TEXT
 
       create_file "config/initializers/whoop.rb", file_contents
