@@ -2,10 +2,10 @@ module Whoop
   class InstallGenerator < Rails::Generators::Base
     desc "This generator creates an initializer file for the Whoop gem at config/initializers/whoop.rb, with default recommended settings."
 
-    class_option :logger, type: :string, default: 'log/debug.log'
-    class_option :level, type: :string, default: 'debug'
-
     VALID_LEVELS = %w[debug info warn error]
+
+    class_option :logger, type: :string, default: 'log/debug.log', desc: 'Indicates a file to output whoop logs to'
+    class_option :level, type: :string, default: 'debug', desc: "Indicates the log level whoop should use. One of #{VALID_LEVELS.join(', ')}"
 
     def install
       @logger = options['logger']
