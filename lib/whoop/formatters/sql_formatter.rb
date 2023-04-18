@@ -92,7 +92,7 @@ module Whoop
         pretty_explain = []
         pretty_explain += lines.map { |line| " #{line}" }
         nrows = result.rows.length
-        rows_label = nrows == 1 ? "row" : "rows"
+        rows_label = (nrows == 1) ? "row" : "rows"
         pretty_explain << "\n(#{nrows} #{rows_label})"
 
         pretty_explain.join("\n")
