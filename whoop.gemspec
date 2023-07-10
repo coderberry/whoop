@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "anbt-sql-formatter"
   spec.add_dependency "colorize"
   spec.add_dependency "rouge"
+  spec.add_dependency "amazing_print"
 
   spec.add_development_dependency "magic_frozen_string_literal"
   spec.add_development_dependency "pry-byebug"

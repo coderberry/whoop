@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Whoop
   class InstallGenerator < Rails::Generators::Base
     desc "This generator creates an initializer file for the Whoop gem at config/initializers/whoop.rb, with default settings."

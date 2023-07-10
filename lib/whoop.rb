@@ -5,6 +5,7 @@ require "colorize"
 require "rouge"
 require_relative "whoop/version"
 require_relative "whoop/formatters/json_formatter"
+require_relative "whoop/formatters/pretty_formatter"
 require_relative "whoop/formatters/sql_formatter"
 
 # Whoop.setup do |config|
@@ -27,7 +28,7 @@ module Whoop
 
   module Main
     COLORS = %i[black red green yellow blue magenta cyan white light_black light_red light_green light_yellow light_blue light_magenta light_cyan light_white default].freeze
-    FORMATS = %i[plain json sql].freeze
+    FORMATS = %i[plain pretty json sql].freeze
     PATTERN = "-"
     COUNT = 80
     INDENT = "┆"
@@ -39,7 +40,7 @@ module Whoop
     # @param [String] pattern - the pattern to use for the line (e.g. '-')
     # @param [Integer] count - the number of times to repeat the pattern per line (e.g. 80)
     # @param [Symbol] color - the color to use for the line (e.g. :red)
-    # @param [Symbol] format - the format to use for the message (one of :json, :sql, :plain)
+    # @param [Symbol] format - the format to use for the message (one of :json, :sql, :plain, :pretty (default))
     # @param [Integer] caller_depth - the depth of the caller to use for the source (default: 0)
     # @param [Boolean] explain - whether to explain the SQL query (default: false)
     # @param [Hash] context - Any additional context you'd like to include in the log
@@ -48,7 +49,7 @@ module Whoop
       pattern: PATTERN,
       count: COUNT,
       color: :default,
-      format: :plain,
+      format: :pretty,
       caller_depth: 0,
       explain: false,
       context: nil
@@ -147,6 +148,8 @@ module Whoop
         ->(message) { Whoop::Formatters::JsonFormatter.format(message, colorize: colorize) }
       when :sql
         ->(message) { Whoop::Formatters::SqlFormatter.format(message, colorize: colorize, explain: explain) }
+      when :pretty
+        ->(message) { Whoop::Formatters::PrettyFormatter.format(message) }
       else
         ->(message) { message }
       end

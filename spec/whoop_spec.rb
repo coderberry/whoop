@@ -42,7 +42,7 @@ RSpec.describe Whoop do
         puts logged_message
 
         expect(logged_message).to include("Bad format")
-        expect(logged_message).to include("Unsupported format used. Available formats: plain, json, and sql")
+        expect(logged_message).to include("Unsupported format used. Available formats: plain, pretty, json, and sql")
       end
     end
 
@@ -56,6 +56,20 @@ RSpec.describe Whoop do
 
         expect(logged_message).to include('"hello": "world"')
         expect(logged_message).not_to include("Unsupported format used.")
+      end
+    end
+
+    context "when the format is :pretty" do
+      it "writes to the logger" do
+        io = setup_whoop
+        obj = OpenStruct.new(name: "Eric", location: "Utah")
+        whoop(obj, format: :pretty)
+        logged_message = io.string
+
+        puts logged_message
+
+        expect(logged_message).to include("OpenStruct {")
+        expect(logged_message).to include('"Utah"')
       end
     end
 
