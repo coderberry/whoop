@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    whoop (1.1.0)
+    whoop (1.2.0)
       activerecord (>= 6.1.4)
       activesupport (>= 6.1.4)
       amazing_print
