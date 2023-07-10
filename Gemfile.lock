@@ -4,6 +4,7 @@ PATH
     whoop (1.1.0)
       activerecord (>= 6.1.4)
       activesupport (>= 6.1.4)
+      amazing_print
       anbt-sql-formatter
       colorize
       rouge
@@ -21,6 +22,7 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    amazing_print (1.5.0)
     anbt-sql-formatter (0.1.0)
     ast (2.4.2)
     bump (0.10.0)
@@ -114,6 +116,7 @@ GEM
     yard (0.9.34)
 
 PLATFORMS
+  arm64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
