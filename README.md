@@ -59,7 +59,7 @@ You can pass any options into the `whoop` method to change the output.
 - `pattern` - String character to use for the line (default is `-`)
 - `count` - the number of times to repeat the pattern per line (e.g. 80)
 - `color` - the color to use for the line (e.g. :red)
-- `format` - the format to use for the message (one of `:json`, `:sql`, `:plain`)
+- `format` - the format to use for the message (one of `:json`, `:sql`, `:plain`, `:pretty`)
 - `caller_depth` - the depth of the caller to use for the source (default: 0)
 - `explain` - whether to run `EXPLAIN` on the SQL query (default: false)
 - `context` - a hash of key/value pairs to include in the output
@@ -101,6 +101,23 @@ whoop({hello: "world"}, format: :json, color: false)
 #
 # {
 #   "hello": "world"
+# }
+# 
+# ┗--------------------------------------------------------------------------------
+```
+
+```ruby
+user = User.first # or some object
+whoop(user, format: :pretty)
+
+# ┏--------------------------------------------------------------------------------
+# ┆ timestamp: 2022-09-26 14:28:06 -0600
+# ┆ source: /spec/whoop_spec.rb:39
+#
+# User {
+#         :id => 1,
+#       :name => "Eric",
+#   :location => "Utah"
 # }
 # 
 # ┗--------------------------------------------------------------------------------
