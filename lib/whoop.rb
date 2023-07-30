@@ -5,6 +5,7 @@ require "colorize"
 require "rouge"
 require_relative "whoop/version"
 require_relative "whoop/tracer"
+require_relative "whoop/trace_response"
 require_relative "whoop/formatters/json_formatter"
 require_relative "whoop/formatters/pretty_formatter"
 require_relative "whoop/formatters/sql_formatter"
@@ -29,7 +30,7 @@ module Whoop
 
   module Main
     COLORS = %i[black red green yellow blue magenta cyan white light_black light_red light_green light_yellow light_blue light_magenta light_cyan light_white default].freeze
-    FORMATS = %i[plain pretty json sql].freeze
+    FORMATS = %i[plain pretty json sql trace].freeze
     TRACE_EVENTS = %i[line class end call return c_call c_return raise b_call b_return thread_begin thread_end fiber_switch script_compiled].freeze
     PATTERN = "-"
     COUNT = 80
@@ -61,9 +62,6 @@ module Whoop
       logger_method = detect_logger_method
       color_method = detect_color_method(color)
 
-      trace_method = detect_trace_method(trace_events)
-      format = :trace if trace_method
-
       formatter_method = detect_formatter_method(format, colorize: color.present?, explain: explain)
 
       line = pattern * count
@@ -81,7 +79,18 @@ module Whoop
         end
 
       if block_given?
-        result = yield
+        io = StringIO.new
+        results = 
+          if format == :trace
+            trace_events = trace_events.any? ? trace_events : [:call]
+            result, io = Tracer.start_trace(io, trace_events) { yield }
+          else
+            yield
+          end
+
+        require "pry"
+        binding.pry
+
         # result = nil
         # traced_events = []
         # if trace_method
@@ -169,21 +178,9 @@ module Whoop
       when :pretty
         ->(message) { Whoop::Formatters::PrettyFormatter.format(message) }
       when :trace
-        ->(message) { Whoop::Formatters::TraceFormatter.format(message) }
+          ->(trace_response) { Whoop::Formatters::TraceFormatter.format(trace_response) }
       else
         ->(message) { message }
-      end
-    end
-
-    def detect_trace_method(trace_events = [])
-      return nil unless trace_events.any?
-      raise ArgumentError, "Invalid trace_events: #{trace_events}. Must be one of #{TRACE_EVENTS}" unless (trace_events.map(&:to_sym) - TRACE_EVENTS).empty?
-
-      CallTra
-      ->(&block) do
-        trace = TracePoint.new(:call) do |tp|
-          Whoop::Formatters::JsonFormatter.format(message, colorize: colorize)
-        end
       end
     end
 
@@ -192,17 +189,6 @@ module Whoop
 
       invalid_format_line = [color_method.call(INDENT), "note:".colorize(:blue).underline, "Unsupported format used. Available formats: #{FORMATS.to_sentence}"].join(" ")
       logger_method.call invalid_format_line
-    end
-
-    def trace(message = nil, &block)
-      trace_method = detect_trace_method
-
-      trace = TracePoint.new(:line) do |tp|
-        if tp.path == __FILE__ && tp.lineno == __LINE__ + 1
-          trace.disable
-          block.call
-        end
-      end
     end
 
     # Return the line with the label centered in it

@@ -5,7 +5,7 @@ require "amazing_print"
 module Whoop
   module Formatters
     module TraceFormatter
-      # @param [TraceResponse] response The results of the trace
+      # @param trace_response [TraceResponse] The results of the trace
       # @return [String] The formatted message
       def self.format(trace_response)
         json = trace_response.traced_events.map do |description, tp, path, lineno|

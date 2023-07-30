@@ -5,10 +5,10 @@ require "json"
 module Whoop
   module Formatters
     module JsonFormatter
-      # Format the SQL query
-      # @param [String] message The SQL query
-      # @param [Boolean] colorize - colorize the SQL query (default: false)
-      # @return [String] The formatted SQL query
+      # Format the JSON object
+      # @param [String] message The JSON object
+      # @param [Boolean] colorize - colorize the output
+      # @return [String] The formatted JSON
       def self.format(message, colorize: false)
         pretty_json = JSON.pretty_generate(message)
         return pretty_json unless colorize

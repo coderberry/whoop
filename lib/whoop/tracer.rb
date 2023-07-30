@@ -1,30 +1,35 @@
+# frozen_string_literal: true
+
+require "json"
+
 module Whoop
   class Tracer
     class << self
       # Trace the execution of a block
-      # @param [Array<Symbol>] trace_events - The trace events to listen for
-      # @yield The code block to be executed and traced
-      # @return [TraceResponse] The trace response
-      #
-      # @example Tracing a block of code
-      #   Whoop::Tracer.trace("Debug trace") do
-      #     foo = "foo"
-      #     bar = "bar"
-      #     baz = "baz"
-      #   end
-      def start_trace(trace_events = [], &block)
-        raise ArgumentError, "block not given" unless block_given?
+      # @param io [StringIO] The string to write the results to
+      # @param trace_events [Array<Symbol>] The trace events to listen for
+      # @return [Array<Hash>] The trace response
+      def start_trace(io, trace_events = [], &block)
+        raise ArgumentError, "block not given" unless block
 
-        response = TraceResponse.new
         trace = TracePoint.new(*trace_events) do |tp|
-          response.traced_events << [description, tp, tp.path, tp.lineno]
+          io.puts({
+            path: tp.path,
+            lineno: tp.lineno,
+            event: tp.event,
+            method_id: tp.method_id
+          }.to_json)
         end
 
-        trace.enable
-        response.results = yield block
-        trace.disable
+        result = begin
+          trace.enable
+          yield block
+          trace.disable
+        end
 
-        response
+        [result, io.string]
+
+        # io.string.split(/\n/).map { |str| JSON.parse(str) }
       end
     end
   end

@@ -12,6 +12,7 @@ module Whoop
   module Main
     COLORS: untyped
     FORMATS: untyped
+    TRACE_EVENTS: untyped
     PATTERN: untyped
     COUNT: untyped
     INDENT: untyped
@@ -35,6 +36,8 @@ module Whoop
     # 
     # _@param_ `explain` — - whether to explain the SQL query (default: false)
     # 
+    # _@param_ `trace_events` — - events to trace block execution
+    # 
     # _@param_ `context` — - Any additional context you'd like to include in the log
     def whoop: (
                  ?String? label,
@@ -44,6 +47,7 @@ module Whoop
                  ?format: Symbol,
                  ?caller_depth: Integer,
                  ?explain: bool,
+                 ?trace_events: ::Array[Symbol],
                  ?context: ::Hash[untyped, untyped]?
                ) -> untyped
 
@@ -73,11 +77,19 @@ module Whoop
     # _@return_ — format method
     def detect_formatter_method: (Symbol format, ?colorize: untyped, ?explain: untyped) -> Method
 
+    # sord omit - no YARD type given for "trace_events", using untyped
+    # sord omit - no YARD return type given, using untyped
+    def detect_trace_method: (?untyped trace_events) -> untyped
+
     # sord omit - no YARD type given for "format", using untyped
     # sord omit - no YARD type given for "color_method", using untyped
     # sord omit - no YARD type given for "logger_method", using untyped
     # sord omit - no YARD return type given, using untyped
     def display_invalid_format_message: (untyped format, untyped color_method, untyped logger_method) -> untyped
+
+    # sord omit - no YARD type given for "message", using untyped
+    # sord omit - no YARD return type given, using untyped
+    def trace: (?untyped message) -> untyped
 
     # Return the line with the label centered in it
     # 
@@ -87,6 +99,34 @@ module Whoop
     # 
     # _@param_ `pattern`
     def wrapped_line: (String label, ?count: Integer, ?pattern: String) -> String
+  end
+
+  class Tracer
+    # Trace the execution of a block
+    # 
+    # _@param_ `trace_events` — - The trace events to listen for
+    # 
+    # _@return_ — The trace response
+    # 
+    # Tracing a block of code
+    # ```ruby
+    # Whoop::Tracer.trace("Debug trace") do
+    #   foo = "foo"
+    #   bar = "bar"
+    #   baz = "baz"
+    # end
+    # ```
+    def self.start_trace: (?::Array[Symbol] trace_events) -> TraceResponse
+  end
+
+  class TraceResponse
+    # sord omit - no YARD type given for :results, using untyped
+    # Returns the value of attribute results.
+    attr_reader results: untyped
+
+    # sord omit - no YARD type given for :traced_events, using untyped
+    # Returns the value of attribute traced_events.
+    attr_reader traced_events: untyped
   end
 
   module Formatters
@@ -120,14 +160,21 @@ module Whoop
     end
 
     module JsonFormatter
-      # Format the SQL query
+      # Format the JSON object
       # 
-      # _@param_ `message` — The SQL query
+      # _@param_ `message` — The JSON object
       # 
-      # _@param_ `colorize` — - colorize the SQL query (default: false)
+      # _@param_ `colorize` — - colorize the output
       # 
-      # _@return_ — The formatted SQL query
+      # _@return_ — The formatted JSON
       def self.format: (String message, ?colorize: bool) -> String
+    end
+
+    module TraceFormatter
+      # _@param_ `trace_response` — The results of the trace
+      # 
+      # _@return_ — The formatted message
+      def self.format: (TraceResponse trace_response) -> String
     end
 
     module PrettyFormatter
