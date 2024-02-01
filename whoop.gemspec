@@ -31,13 +31,14 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activerecord", ">= 6.1.4"
   spec.add_dependency "activesupport", ">= 6.1.4"
+  spec.add_dependency "amazing_print"
   spec.add_dependency "anbt-sql-formatter"
   spec.add_dependency "colorize"
   spec.add_dependency "rouge"
-  spec.add_dependency "amazing_print"
+  spec.add_dependency "semantic_logger"
 
   spec.add_development_dependency "magic_frozen_string_literal"
-  spec.add_development_dependency "pry-byebug"
+  spec.add_development_dependency "pry"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "standard"

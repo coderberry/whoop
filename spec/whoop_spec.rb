@@ -87,6 +87,39 @@ RSpec.describe Whoop do
       end
     end
 
+    context "when the format is :semantic" do
+      it "writes to the logger" do
+        @original_stdout = $stdout
+        $stdout = StringIO.new
+
+        SemanticLogger.default_level = :debug
+        SemanticLogger.add_appender(io: $stdout, level: :debug)
+
+        Whoop.setup do |config|
+          config.logger = SemanticLogger[Whoop]
+          config.level = :debug
+        end
+
+        context = {current_user: "Eric", ip_address: "127.0.0.1"}
+        tags = %w[tag1 tag2]
+
+        whoop("Hello Semantic Logger", context: context, tags: tags)
+        logged_message = $stdout.string
+
+        $stdout = @original_stdout
+
+        puts "\n------ Semantic Output ------"
+        puts logged_message.to_s
+        puts "-----------------------------\n"
+
+        # Example output:
+        # 2024-02-01 10:38:55.044748 D [81357:6060] [tag1] [tag2] Whoop -- Hello Semantic Logger -- {:current_user=>"Eric", :ip_address=>"127.0.0.1"}
+
+        expect(logged_message).to include(%([tag1] [tag2] Whoop -- Hello Semantic Logger -- {:current_user=>"Eric", :ip_address=>"127.0.0.1"}))
+        expect(logged_message).not_to include("Unsupported format used.")
+      end
+    end
+
     context "when context is passed" do
       it "writes to the logger" do
         io = setup_whoop
@@ -102,6 +135,19 @@ RSpec.describe Whoop do
         context.each do |k, v|
           expect(logged_message.uncolorize).to include "#{k}: #{v}"
         end
+      end
+    end
+
+    context "when tags are passed" do
+      it "writes to the logger" do
+        io = setup_whoop
+        tags = %w[tag1 tag2]
+        whoop("With Tags", tags: tags) { "Should include tags" }
+        logged_message = io.string
+
+        puts logged_message
+
+        expect(logged_message.uncolorize).to include "tags: tag1 tag2"
       end
     end
 

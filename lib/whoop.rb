@@ -3,6 +3,8 @@
 require "active_support"
 require "colorize"
 require "rouge"
+require "semantic_logger"
+
 require_relative "whoop/version"
 require_relative "whoop/formatters/json_formatter"
 require_relative "whoop/formatters/pretty_formatter"
@@ -40,9 +42,10 @@ module Whoop
     # @param [String] pattern - the pattern to use for the line (e.g. '-')
     # @param [Integer] count - the number of times to repeat the pattern per line (e.g. 80)
     # @param [Symbol] color - the color to use for the line (e.g. :red)
-    # @param [Symbol] format - the format to use for the message (one of :json, :sql, :plain, :pretty (default))
+    # @param [Symbol] format - the format to use for the message (one of :json, :sql, :plain, :semantic, :pretty (default))
     # @param [Integer] caller_depth - the depth of the caller to use for the source (default: 0)
     # @param [Boolean] explain - whether to explain the SQL query (default: false)
+    # @param [Array<String, Symbol>] tags - Any tags you'd like to include in the log
     # @param [Hash] context - Any additional context you'd like to include in the log
     def whoop(
       label = nil,
@@ -52,14 +55,35 @@ module Whoop
       format: :pretty,
       caller_depth: 0,
       explain: false,
+      tags: [],
       context: nil
     )
+      message = block_given? ? yield : label
+
+      if Whoop.logger.is_a?(SemanticLogger::Logger)
+        context ||= {}
+
+        if tags.length > 0
+          Whoop.logger.tagged(*tags) do
+            Whoop.logger.send(Whoop.level.to_sym, message, **context)
+          end
+        else
+          Whoop.logger.send(Whoop.level.to_sym, message, **context)
+        end
+
+        return
+      end
+
+      if tags.length > 0
+        context ||= {}
+        context[:tags] = tags
+      end
+
       logger_method = detect_logger_method
       color_method = detect_color_method(color)
       formatter_method = detect_formatter_method(format, colorize: color.present?, explain: explain)
-
-      line = pattern * count
       caller_path = clean_caller_path(caller[caller_depth])
+      line = pattern * count
       caller_path_line = [color_method.call(INDENT), "source:".colorize(:light_black).underline, caller_path].join(" ")
       timestamp_line = [color_method.call(INDENT), "timestamp:".colorize(:light_black).underline, Time.now].join(" ")
 
@@ -72,38 +96,23 @@ module Whoop
           []
         end
 
-      if block_given?
-        result = yield
-        top_line =
-          if label.present? && label.is_a?(String)
-            wrapped_line(label.to_s, pattern: pattern, count: count)
-          else
-            pattern * count
-          end
-        result.tap do
-          logger_method.call color_method.call "\n\n#{TOP_LINE_CHAR}#{top_line}"
-          logger_method.call timestamp_line
-          logger_method.call caller_path_line
-          context_lines.each { |l| logger_method.call l }
-          logger_method.call ""
-          logger_method.call formatter_method.call(result)
-          logger_method.call ""
-          display_invalid_format_message(format, color_method, logger_method)
-          logger_method.call color_method.call "#{BOTTOM_LINE_CHAR}#{line}\n\n"
+      top_line =
+        if label.present? && label.is_a?(String)
+          wrapped_line(label.to_s, pattern: pattern, count: count)
+        else
+          pattern * count
         end
-      else
-        tap do
-          logger_method.call color_method.call "\n\n#{TOP_LINE_CHAR}#{line}"
-          logger_method.call timestamp_line
-          logger_method.call caller_path_line
-          context_lines.each { |l| logger_method.call l }
-          logger_method.call ""
-          logger_method.call formatter_method.call(label)
-          logger_method.call ""
-          display_invalid_format_message(format, color_method, logger_method)
-          logger_method.call color_method.call "#{BOTTOM_LINE_CHAR}#{line}\n\n"
-        end
-      end
+
+      logger_method.call color_method.call top_line
+      logger_method.call color_method.call "\n\n#{TOP_LINE_CHAR}#{top_line}"
+      logger_method.call timestamp_line
+      logger_method.call caller_path_line
+      context_lines.each { |l| logger_method.call l }
+      logger_method.call ""
+      logger_method.call formatter_method.call(message)
+      logger_method.call ""
+      display_invalid_format_message(format, color_method, logger_method)
+      logger_method.call color_method.call "#{BOTTOM_LINE_CHAR}#{line}\n\n"
     end
 
     private
@@ -140,9 +149,11 @@ module Whoop
     end
 
     # Return the format method to use
-    # @param [Symbol] format
+    # @param [Symbol] format - one of :json, :sql, :pretty, :semantic, :plain
+    # @param [Hash] context - the context provided
+    # @param [Boolean] explain - if format is sql, execute the explain on the query
     # @return [Method] format method
-    def detect_formatter_method(format, colorize: false, explain: false)
+    def detect_formatter_method(format, context: {}, colorize: false, explain: false)
       case format.to_sym
       when :json
         ->(message) { Whoop::Formatters::JsonFormatter.format(message, colorize: colorize) }
@@ -150,6 +161,8 @@ module Whoop
         ->(message) { Whoop::Formatters::SqlFormatter.format(message, colorize: colorize, explain: explain) }
       when :pretty
         ->(message) { Whoop::Formatters::PrettyFormatter.format(message) }
+      when :semantic
+        ->(message, context = {}) { Whoop::Formatters::PrettyFormatter.format(message, **context) }
       else
         ->(message) { message }
       end

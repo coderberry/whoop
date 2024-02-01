@@ -29,11 +29,13 @@ module Whoop
     # 
     # _@param_ `color` — - the color to use for the line (e.g. :red)
     # 
-    # _@param_ `format` — - the format to use for the message (one of :json, :sql, :plain, :pretty (default))
+    # _@param_ `format` — - the format to use for the message (one of :json, :sql, :plain, :semantic, :pretty (default))
     # 
     # _@param_ `caller_depth` — - the depth of the caller to use for the source (default: 0)
     # 
     # _@param_ `explain` — - whether to explain the SQL query (default: false)
+    # 
+    # _@param_ `tags` — - Any tags you'd like to include in the log
     # 
     # _@param_ `context` — - Any additional context you'd like to include in the log
     def whoop: (
@@ -44,6 +46,7 @@ module Whoop
                  ?format: Symbol,
                  ?caller_depth: Integer,
                  ?explain: bool,
+                 ?tags: ::Array[(String | Symbol)],
                  ?context: ::Hash[untyped, untyped]?
                ) -> untyped
 
@@ -65,13 +68,21 @@ module Whoop
     def detect_logger_method: () -> Method
 
     # sord omit - no YARD type given for "colorize:", using untyped
-    # sord omit - no YARD type given for "explain:", using untyped
     # Return the format method to use
     # 
-    # _@param_ `format`
+    # _@param_ `format` — - one of :json, :sql, :pretty, :semantic, :plain
+    # 
+    # _@param_ `context` — - the context provided
+    # 
+    # _@param_ `explain` — - if format is sql, execute the explain on the query
     # 
     # _@return_ — format method
-    def detect_formatter_method: (Symbol format, ?colorize: untyped, ?explain: untyped) -> Method
+    def detect_formatter_method: (
+                                   Symbol format,
+                                   ?context: ::Hash[untyped, untyped],
+                                   ?colorize: untyped,
+                                   ?explain: bool
+                                 ) -> Method
 
     # sord omit - no YARD type given for "format", using untyped
     # sord omit - no YARD type given for "color_method", using untyped
@@ -87,6 +98,52 @@ module Whoop
     # 
     # _@param_ `pattern`
     def wrapped_line: (String label, ?count: Integer, ?pattern: String) -> String
+  end
+
+  module Constants
+    class ICONS
+      CHECKMARK: untyped
+      TIMES: untyped
+      PLUS: untyped
+      MINUS: untyped
+    end
+
+    class COLORS
+      BLACK: untyped
+      RED: untyped
+      GREEN: untyped
+      YELLOW: untyped
+      BLUE: untyped
+      MAGENTA: untyped
+      CYAN: untyped
+      WHITE: untyped
+      DEFAULT: untyped
+      LIGHT_BLACK: untyped
+      LIGHT_RED: untyped
+      LIGHT_GREEN: untyped
+      LIGHT_YELLOW: untyped
+      LIGHT_BLUE: untyped
+      LIGHT_MAGENTA: untyped
+      LIGHT_CYAN: untyped
+      LIGHT_WHITE: untyped
+    end
+
+    class MODES
+      DEFAULT: untyped
+      BOLD: untyped
+      DIM: untyped
+      ITALIC: untyped
+      UNDERLINE: untyped
+      BLINK: untyped
+      BLINK_SLOW: untyped
+      BLINK_FAST: untyped
+      INVERT: untyped
+      HIDE: untyped
+      STRIKE: untyped
+      DOUBLE_UNDERLINE: untyped
+      REVEAL: untyped
+      OVERLINED: untyped
+    end
   end
 
   module Formatters

@@ -36,6 +36,7 @@ Whoop.setup do |config|
   config.logger = ActiveSupport::Logger.new("log/debug.log")
   # config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
   # config.logger = ActiveSupport::Logger.new($stdout)
+  # config.logger = SemanticLogger["WHOOP"]
   # config.logger = nil # uses `puts`
 
   config.level = :debug
@@ -63,6 +64,7 @@ You can pass any options into the `whoop` method to change the output.
 - `caller_depth` - the depth of the caller to use for the source (default: 0)
 - `explain` - whether to run `EXPLAIN` on the SQL query (default: false)
 - `context` - a hash of key/value pairs to include in the output
+- `tags` - an array of tags to include in the output
 
 ## Examples
 
